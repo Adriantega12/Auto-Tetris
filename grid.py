@@ -17,7 +17,6 @@ class Grid:
 
         for i in range(piece.length()): # Y
             for j in range(piece.length()): # X
-                print(i, j)
                 self.grid[piece.pos_y + j][piece.pos_x + i] = piece.shape[j][i]
 
     def print(self):
