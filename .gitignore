@@ -1,0 +1,4 @@
+.editorconfig
+__pycache__/*
+tetris.sublime-project
+tetris.sublime-workspace
