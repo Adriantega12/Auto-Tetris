@@ -68,13 +68,7 @@ class Piece:
         self.shape = deepcopy(Piece.shapes[piece_type.value - 1])
         self.pos_x = 0
         self.pos_y = 0
-
-    def length(self):
-        '''
-        Returns the length of the piece.
-        Since all pieces are contained in square matrixes, will just return the length of shape.
-        '''
-        return len(self.shape)
+        self.length = len(self.shape)
 
     def rotate(self):
         '''Rotate method'''

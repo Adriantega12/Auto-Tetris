@@ -33,17 +33,21 @@ class GameManager:
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:
-                    self.piece.pos_x += -1
+                    if self.piece.pos_x - 1 >= 0:
+                        self.piece.pos_x += -1
                     print('Left')
+
                 elif event.key == pygame.K_d:
-                    self.piece.pos_x += 1
+                    if self.piece.pos_x + self.piece.length < self.grid.width:
+                        self.piece.pos_x += 1
                     print('Right')
                 print('Bitch')
 
     def update(self):
         '''Update part from the loop. All logic should be managed from here.'''
         if self.frames % self.speed == 0:
-            self.piece.pos_y += 1
+            if self.piece.pos_y + self.piece.length < self.grid.height:
+                self.piece.pos_y += 1
 
         self.gGrid.grid = deepcopy(self.grid.grid)
         self.gGrid.set_piece(self.piece)
