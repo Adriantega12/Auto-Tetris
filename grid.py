@@ -11,10 +11,8 @@ class Grid:
         '''Access to grid using brackets as if it was just a matrix.'''
         return self.grid[index]
 
-    def setPiece(self, piece):
+    def set_piece(self, piece):
         '''This method will set the piece in the position where piece is'''
-        print(piece.length())
-
         for i in range(piece.length()): # Y
             for j in range(piece.length()): # X
                 self.grid[piece.pos_y + j][piece.pos_x + i] = piece.shape[j][i]
