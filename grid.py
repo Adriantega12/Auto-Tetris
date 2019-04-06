@@ -27,23 +27,16 @@ class Grid:
                     ):
                     self.grid[piece.pos_y + i][piece.pos_x + j] = piece.piece_type * piece.shape[i][j]
 
-    def can_place(self, piece, dx=0, dy=0):
-        '''Checks if a piece can be placed at it's given position'''
-        x, y = (piece.pos_x, piece.pos_y)
-
-        for i in range(y, y + piece.length):
-            for j in range(x, x + piece.length):
-                if piece[i - y][j - x] != 0:
-                    if not self.is_inside_grid(i + dy, j + dx):
-                        print(i, j)
-                        print('Outside grid')
-                        return False
-
-                    if self.grid[i + dy][j + dx] != 0:
-                        print('Is 1')
-                        return False
-
-        return True
+    def check_completition(self):
+        '''Method to remove a row on completition and let the rest of the stack fall'''
+        for row in self.grid:
+            complete = True
+            for cell in row:
+                if cell == 0:
+                    complete = False
+            if complete:
+                self.grid.remove(row)
+                self.grid.insert(0, [0 for i in range(self.width)])
 
     def print(self):
         '''Print grid to console.'''

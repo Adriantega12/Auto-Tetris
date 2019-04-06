@@ -58,6 +58,7 @@ class GameManager:
             else:
                 # Place piece
                 self.grid.set_piece(self.piece)
+                self.grid.check_completition()
                 self.piece = Piece.generate_piece(randint(1, 7))
 
         self.gGrid.grid = deepcopy(self.grid.grid)
