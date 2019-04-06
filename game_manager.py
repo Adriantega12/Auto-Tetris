@@ -23,8 +23,7 @@ class GameManager:
 
         self.grid = Grid()
         self.gGrid = Grid()
-        #self.piece = Piece.generate_piece(randint(0, 7))
-        self.piece = Piece.generate_piece(2)
+        self.piece = Piece.generate_piece(randint(1, 7))
 
     def handle_events(self):
         '''Handle all events in the event queue'''
@@ -49,6 +48,10 @@ class GameManager:
                     dy=1,
                 ):
                 self.piece.pos_y += 1
+            else:
+                # Place piece
+                self.grid.set_piece(self.piece)
+                self.piece = Piece.generate_piece(randint(1, 7))
 
         self.gGrid.grid = deepcopy(self.grid.grid)
         self.gGrid.set_piece(self.piece)
@@ -61,6 +64,7 @@ class GameManager:
         '''
         system('clear')
         self.gGrid.print()
+        print('Piece type: ', self.piece.piece_type)
 
     def loop(self):
         '''Game loop'''

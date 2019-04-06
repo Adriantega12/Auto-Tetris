@@ -68,7 +68,7 @@ class Piece:
 
     def __init__(self, piece_type=PieceType.O.value):
         '''Constructor method'''
-        self._piece_type = piece_type
+        self.piece_type = piece_type
         self.shape = deepcopy(Piece.shapes[piece_type - 1])
         self.pos_x = 0
         self.pos_y = 2

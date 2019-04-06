@@ -21,8 +21,11 @@ class Grid:
         '''This method will set the piece in the position where piece is'''
         for i in range(piece.length): # Y
             for j in range(piece.length): # X
-                if self.is_inside_grid(piece.pos_y + j, piece.pos_x + i):
-                    self.grid[piece.pos_y + j][piece.pos_x + i] = piece.shape[j][i]
+                if piece[i][j] != 0 and self.is_inside_grid(
+                        piece.pos_y + i,
+                        piece.pos_x + j,
+                    ):
+                    self.grid[piece.pos_y + i][piece.pos_x + j] = piece.piece_type * piece.shape[i][j]
 
     def can_place(self, piece, dx=0, dy=0):
         '''Checks if a piece can be placed at it's given position'''
@@ -30,13 +33,13 @@ class Grid:
 
         for i in range(y, y + piece.length):
             for j in range(x, x + piece.length):
-                if piece[i - y][j - x] == 1:
+                if piece[i - y][j - x] != 0:
                     if not self.is_inside_grid(i + dy, j + dx):
                         print(i, j)
                         print('Outside grid')
                         return False
 
-                    if self.grid[i + dy][j + dx] == 1:
+                    if self.grid[i + dy][j + dx] != 0:
                         print('Is 1')
                         return False
 
@@ -45,4 +48,5 @@ class Grid:
     def print(self):
         '''Print grid to console.'''
         for i in range(2, 22):
-            print(i, self.grid[i])
+            print(self.grid[i])
+            # print(i, self.grid[i])
