@@ -8,7 +8,7 @@ from copy import deepcopy
 from random import randint
 import pygame
 from grid import Grid
-from piece import Piece
+from piece import Piece, PieceState
 
 class GameManager:
     '''Game manager class. Manages the main game loop and will manage other things as events.'''
@@ -19,7 +19,7 @@ class GameManager:
         self.display = pygame.display.set_mode((500, 300), pygame.SRCALPHA, 32)
 
         self.frames = 0
-        self.speed = 30
+        self.speed = 15
 
         self.grid = Grid()
         self.gGrid = Grid()
@@ -33,20 +33,27 @@ class GameManager:
                 exit()
 
             if event.type == pygame.KEYDOWN:
-                d = int(event.key == pygame.K_d) - int(event.key == pygame.K_a)
-                if self.grid.can_place(
-                        piece=self.piece,
-                        dx=d,
-                    ):
-                    self.piece.pos_x += d
+                if event.key == pygame.K_r:
+                    self.piece.rotate(self.grid)
+                else:
+                    d = int(event.key == pygame.K_d) - int(event.key == pygame.K_a)
+                    if self.piece.can_place(
+                            #piece=self.piece,
+                            piece=self.piece.shape,
+                            grid=self.grid,
+                            dx=d,
+                        ) == PieceState.CAN_PLACE:
+                        self.piece.pos_x += d
 
     def update(self):
         '''Update part from the loop. All logic should be managed from here.'''
         if self.frames % self.speed == 0:
-            if self.grid.can_place(
-                    piece=self.piece,
+            if self.piece.can_place(
+                    #piece=self.piece,
+                    piece=self.piece.shape,
+                    grid=self.grid,
                     dy=1,
-                ):
+                ) == PieceState.CAN_PLACE:
                 self.piece.pos_y += 1
             else:
                 # Place piece
