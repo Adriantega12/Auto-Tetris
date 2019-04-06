@@ -78,18 +78,31 @@ class Piece:
         '''Returns the row in the shape of the piece'''
         return self.shape[index]
 
-    def rotate(self):
+    def can_place(self, grid, piece=self.shape, dx=0, dy=0):
+        '''Checks if a piece can be placed at it's given position'''
+        x, y = (self.pos_x, self.pos_y)
+
+        for i in range(y, y + self.length):
+            for j in range(x, x + self.length):
+                if piece[i - y][j - x] != 0:
+                    if not grid.is_inside_grid(i + dy, j + dx):
+                        print(i, j)
+                        print('Outside grid')
+                        return False
+
+                    if grid[i + dy][j + dx] != 0:
+                        print('Is 1')
+                        return False
+
+        return True
+
+    def rotate(self, grid):
         '''Rotate method'''
         rotatedPiece = [[0 for i in range(self.length)] for j in range(self.length)]
-
-        '''
-        [[0 0 0]     [[1 0 0]
-         [0 1 0]  =>  [1 1 0]
-         [1 1 1]]     [1 0 0]]
-        '''
 
         for i in range(self.length):
             for j in range(self.length):
                 rotatedPiece[i][j] = self.shape[self.length - 1 - j][i]
 
-        self.shape = deepcopy(rotatedPiece)
+        if self.can_place(grid, rotatedPiece):
+            self.shape = deepcopy(rotatedPiece)

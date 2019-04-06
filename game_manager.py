@@ -37,8 +37,9 @@ class GameManager:
                     self.piece.rotate()
                 else:
                     d = int(event.key == pygame.K_d) - int(event.key == pygame.K_a)
-                    if self.grid.can_place(
-                            piece=self.piece,
+                    if self.piece.can_place(
+                            #piece=self.piece,
+                            grid=self.grid,
                             dx=d,
                         ):
                         self.piece.pos_x += d
@@ -46,8 +47,9 @@ class GameManager:
     def update(self):
         '''Update part from the loop. All logic should be managed from here.'''
         if self.frames % self.speed == 0:
-            if self.grid.can_place(
-                    piece=self.piece,
+            if self.piece.can_place(
+                    #piece=self.piece,
+                    grid=self.grid,
                     dy=1,
                 ):
                 self.piece.pos_y += 1
