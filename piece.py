@@ -62,13 +62,21 @@ class Piece:
         ],
     )
 
-    def __init__(self, piece_type=PieceType.O):
+    def generate_piece(piece_index=1):
+        '''Class method. Generates a piece from a given index.'''
+        return Piece(piece_index)
+
+    def __init__(self, piece_type=PieceType.O.value):
         '''Constructor method'''
         self._piece_type = piece_type
-        self.shape = deepcopy(Piece.shapes[piece_type.value - 1])
+        self.shape = deepcopy(Piece.shapes[piece_type - 1])
         self.pos_x = 0
-        self.pos_y = 0
+        self.pos_y = 2
         self.length = len(self.shape)
+
+    def __getitem__(self, index):
+        '''Returns the row in the shape of the piece'''
+        return self.shape[index]
 
     def rotate(self):
         '''Rotate method'''

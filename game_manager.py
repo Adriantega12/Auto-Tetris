@@ -5,6 +5,7 @@ From here the game loop will run. All the other elements of the game will be mad
 
 from os import system
 from copy import deepcopy
+from random import randint
 import pygame
 from grid import Grid
 from piece import Piece
@@ -22,7 +23,8 @@ class GameManager:
 
         self.grid = Grid()
         self.gGrid = Grid()
-        self.piece = Piece()
+        #self.piece = Piece.generate_piece(randint(0, 7))
+        self.piece = Piece.generate_piece(2)
 
     def handle_events(self):
         '''Handle all events in the event queue'''
@@ -32,21 +34,20 @@ class GameManager:
                 exit()
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_a:
-                    if self.piece.pos_x - 1 >= 0:
-                        self.piece.pos_x += -1
-                    print('Left')
-
-                elif event.key == pygame.K_d:
-                    if self.piece.pos_x + self.piece.length < self.grid.width:
-                        self.piece.pos_x += 1
-                    print('Right')
-                print('Bitch')
+                d = int(event.key == pygame.K_d) - int(event.key == pygame.K_a)
+                if self.grid.can_place(
+                        piece=self.piece,
+                        dx=d,
+                    ):
+                    self.piece.pos_x += d
 
     def update(self):
         '''Update part from the loop. All logic should be managed from here.'''
         if self.frames % self.speed == 0:
-            if self.piece.pos_y + self.piece.length < self.grid.height:
+            if self.grid.can_place(
+                    piece=self.piece,
+                    dy=1,
+                ):
                 self.piece.pos_y += 1
 
         self.gGrid.grid = deepcopy(self.grid.grid)

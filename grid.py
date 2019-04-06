@@ -13,13 +13,36 @@ class Grid:
         '''Access to grid using brackets as if it was just a matrix.'''
         return self.grid[index]
 
+    def is_inside_grid(self, i, j):
+        '''Tests if a given position is inside the grid'''
+        return 0 <= i < self.height and 0 <= j < self.width
+
     def set_piece(self, piece):
         '''This method will set the piece in the position where piece is'''
         for i in range(piece.length): # Y
             for j in range(piece.length): # X
-                self.grid[piece.pos_y + j][piece.pos_x + i] = piece.shape[j][i]
+                if self.is_inside_grid(piece.pos_y + j, piece.pos_x + i):
+                    self.grid[piece.pos_y + j][piece.pos_x + i] = piece.shape[j][i]
+
+    def can_place(self, piece, dx=0, dy=0):
+        '''Checks if a piece can be placed at it's given position'''
+        x, y = (piece.pos_x, piece.pos_y)
+
+        for i in range(y, y + piece.length):
+            for j in range(x, x + piece.length):
+                if piece[i - y][j - x] == 1:
+                    if not self.is_inside_grid(i + dy, j + dx):
+                        print(i, j)
+                        print('Outside grid')
+                        return False
+
+                    if self.grid[i + dy][j + dx] == 1:
+                        print('Is 1')
+                        return False
+
+        return True
 
     def print(self):
         '''Print grid to console.'''
-        for row in self.grid:
-            print(row)
+        for i in range(2, 22):
+            print(i, self.grid[i])
