@@ -80,3 +80,16 @@ class Piece:
 
     def rotate(self):
         '''Rotate method'''
+        rotatedPiece = [[0 for i in range(self.length)] for j in range(self.length)]
+
+        '''
+        [[0 0 0]     [[1 0 0]
+         [0 1 0]  =>  [1 1 0]
+         [1 1 1]]     [1 0 0]]
+        '''
+
+        for i in range(self.length):
+            for j in range(self.length):
+                rotatedPiece[i][j] = self.shape[self.length - 1 - j][i]
+
+        self.shape = deepcopy(rotatedPiece)

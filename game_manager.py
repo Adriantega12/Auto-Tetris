@@ -33,12 +33,15 @@ class GameManager:
                 exit()
 
             if event.type == pygame.KEYDOWN:
-                d = int(event.key == pygame.K_d) - int(event.key == pygame.K_a)
-                if self.grid.can_place(
-                        piece=self.piece,
-                        dx=d,
-                    ):
-                    self.piece.pos_x += d
+                if event.key == pygame.K_r:
+                    self.piece.rotate()
+                else:
+                    d = int(event.key == pygame.K_d) - int(event.key == pygame.K_a)
+                    if self.grid.can_place(
+                            piece=self.piece,
+                            dx=d,
+                        ):
+                        self.piece.pos_x += d
 
     def update(self):
         '''Update part from the loop. All logic should be managed from here.'''
