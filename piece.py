@@ -86,12 +86,12 @@ class Piece:
             for j in range(x, x + self.length):
                 if piece[i - y][j - x] != 0:
                     if not grid.is_inside_grid(i + dy, j + dx):
-                        return False
+                        return PieceState.OFFSCREEN
 
                     if grid[i + dy][j + dx] != 0:
-                        return False
+                        return PieceState.BLOCKED
 
-        return True
+        return PieceState.CAN_PLACE
 
     def rotate(self, grid):
         '''Rotate method'''
@@ -101,5 +101,5 @@ class Piece:
             for j in range(self.length):
                 rotatedPiece[i][j] = self.shape[self.length - 1 - j][i]
 
-        if self.can_place(grid, rotatedPiece):
+        if self.can_place(grid, rotatedPiece) == PieceState.CAN_PLACE:
             self.shape = deepcopy(rotatedPiece)
