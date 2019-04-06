@@ -78,7 +78,7 @@ class Piece:
         '''Returns the row in the shape of the piece'''
         return self.shape[index]
 
-    def can_place(self, grid, piece=self.shape, dx=0, dy=0):
+    def can_place(self, grid, piece=[], dx=0, dy=0):
         '''Checks if a piece can be placed at it's given position'''
         x, y = (self.pos_x, self.pos_y)
 
@@ -86,12 +86,9 @@ class Piece:
             for j in range(x, x + self.length):
                 if piece[i - y][j - x] != 0:
                     if not grid.is_inside_grid(i + dy, j + dx):
-                        print(i, j)
-                        print('Outside grid')
                         return False
 
                     if grid[i + dy][j + dx] != 0:
-                        print('Is 1')
                         return False
 
         return True

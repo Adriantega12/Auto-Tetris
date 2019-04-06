@@ -34,11 +34,12 @@ class GameManager:
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
-                    self.piece.rotate()
+                    self.piece.rotate(self.grid)
                 else:
                     d = int(event.key == pygame.K_d) - int(event.key == pygame.K_a)
                     if self.piece.can_place(
                             #piece=self.piece,
+                            piece=self.piece.shape,
                             grid=self.grid,
                             dx=d,
                         ):
@@ -49,6 +50,7 @@ class GameManager:
         if self.frames % self.speed == 0:
             if self.piece.can_place(
                     #piece=self.piece,
+                    piece=self.piece.shape,
                     grid=self.grid,
                     dy=1,
                 ):
