@@ -95,11 +95,21 @@ class Piece:
 
     def rotate(self, grid):
         '''Rotate method'''
-        rotatedPiece = [[0 for i in range(self.length)] for j in range(self.length)]
+        rotated_piece = [[0 for i in range(self.length)] for j in range(self.length)]
 
         for i in range(self.length):
             for j in range(self.length):
-                rotatedPiece[i][j] = self.shape[self.length - 1 - j][i]
+                rotated_piece[i][j] = self.shape[self.length - 1 - j][i]
 
-        if self.can_place(grid, rotatedPiece) == PieceState.CAN_PLACE:
-            self.shape = deepcopy(rotatedPiece)
+        p_state = self.can_place(grid, rotated_piece)
+
+        if p_state == PieceState.CAN_PLACE:
+            self.shape = deepcopy(rotated_piece)
+
+        elif p_state == PieceState.OFFSCREEN:
+            if self.pos_x < 0:
+                self.pos_x = 0
+            # elif self.pos_x > grid.width:
+            else:
+                self.pos_x = grid.width - self.length
+            self.shape = deepcopy(rotated_piece)
