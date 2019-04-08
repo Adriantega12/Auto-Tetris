@@ -16,7 +16,7 @@ class GameManager:
     def __init__(self):
         pygame.init()
 
-        self.display = pygame.display.set_mode((500, 300), pygame.SRCALPHA, 32)
+        self.display = pygame.display.set_mode((600, 660), pygame.SRCALPHA, 32)
 
         self.frames = 0
         self.speed = 15
@@ -64,6 +64,12 @@ class GameManager:
         self.gGrid.grid = deepcopy(self.grid.grid)
         self.gGrid.set_piece(self.piece)
 
+    def render(self):
+        '''Render method of the game loop. Here everything will be rendered.'''
+        self.display.fill((100, 100, 100))
+        self.gGrid.render(self.display)
+        pygame.display.update()
+
     def print(self):
         '''
         Print part from the loop. The grid will be printed from here.
@@ -85,4 +91,5 @@ class GameManager:
             self.handle_events()
 
             self.update()
-            self.print()
+            self.render()
+            #self.print()
