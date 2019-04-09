@@ -33,8 +33,15 @@ class GameManager:
                 exit()
 
             if event.type == pygame.KEYDOWN:
+                # Rotation
                 if event.key == pygame.K_r:
                     self.piece.rotate(self.grid)
+
+                # Drop down
+                elif event.key == pygame.K_s:
+                    self.piece.pos_y += self.piece.dropdown(self.grid)
+
+                # Sideways movement
                 else:
                     d = int(event.key == pygame.K_d) - int(event.key == pygame.K_a)
                     if self.piece.can_place(

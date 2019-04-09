@@ -124,3 +124,13 @@ class Piece:
             else:
                 self.pos_x = grid.width - self.length
             self.shape = deepcopy(rotated_piece)
+
+    def dropdown(self, grid):
+        '''Dropdown a piece'''
+
+        for i in range(1, grid.height - self.pos_y):
+            if not self.can_place(grid, self.shape, dy=i) == PieceState.CAN_PLACE:
+                return i - 1
+
+        return 0
+
