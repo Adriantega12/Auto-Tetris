@@ -68,6 +68,6 @@ class Grid:
 
     def print(self):
         '''Print grid to console.'''
-        for i in range(2, 22):
+        for i in range(self.height):
             print(self.grid[i])
             # print(i, self.grid[i])
