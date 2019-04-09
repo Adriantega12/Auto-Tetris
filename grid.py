@@ -42,7 +42,7 @@ class Grid:
                 self.grid.remove(row)
                 self.grid.insert(0, [0 for i in range(self.width)])
 
-    def render(self, display, x=0, y=0):
+    def render(self, display, x=8, y=8):
         '''Render method of the grid, should render all the grid'''
         # Background
         draw.rect(
@@ -58,11 +58,12 @@ class Grid:
                         display,
                         Piece.COLORS[self.grid[i][j]],
                         (
-                            j * self.cell_size,
-                            (i - 2) * self.cell_size,
+                            x + j * self.cell_size,
+                            y + (i - 2) * self.cell_size,
                             self.cell_size,
                             self.cell_size,
                             ),
+                        2
                         )
 
     def print(self):
