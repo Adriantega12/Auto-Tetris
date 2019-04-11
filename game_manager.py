@@ -4,6 +4,7 @@ From here the game loop will run. All the other elements of the game will be mad
 '''
 
 from os import system
+import sys
 from copy import deepcopy
 from random import randint
 import pygame
@@ -19,14 +20,27 @@ class GameManager:
 
         self.display = pygame.display.set_mode((600, 660), pygame.SRCALPHA, 32)
 
+        # Game level (Probably should modify this)
         self.frames = 0
         self.speed = 15
 
+        # Game essentials
         self.grid = Grid()
         self.gGrid = Grid()
         self.piece = Piece.generate_piece(randint(1, 7))
 
+        # Data generation for the neural network
         self.data_gen = DataGenerator()
+
+        # Arg flags
+        self.is_human = True
+
+    def setup(self):
+        '''Setup function for whatever is needed'''
+        arguments = sys.argv[1:]
+
+        if '-ai' in arguments:
+            self.is_human = False
 
     def handle_events(self):
         '''Handle all events in the event queue'''
@@ -35,44 +49,40 @@ class GameManager:
                 print('Bye bye')
                 exit()
 
-            if event.type == pygame.KEYDOWN:
-                # Rotation
-                if event.key == pygame.K_r:
-                    self.piece.rotate(self.grid)
-                    self.data_gen.write_grid(self.gGrid, 1)
+            if self.is_human:
+                self.handle_human_input(event)
 
-                # Drop down
-                elif event.key == pygame.K_s:
-                    self.piece.pos_y += self.piece.dropdown(self.grid)
-                    self.data_gen.write_grid(self.gGrid, 2)
+    def handle_human_input(self, event):
+        '''Handle human input if control is given'''
+        if event.type == pygame.KEYDOWN:
+            # Rotation
+            if event.key == pygame.K_r:
+                self.piece.rotate(self.grid)
+                self.data_gen.write_grid(self.gGrid, 1)
 
-                # Sideways movement
-                elif event.key == pygame.K_d:
-                    if self.piece.can_place(
-                            piece=self.piece.shape,
-                            grid=self.grid,
-                            dx=1,
-                        ) == PieceState.CAN_PLACE:
-                        self.piece.pos_x += 1
-                        self.data_gen.write_grid(self.gGrid, 3)
+            # Drop down
+            elif event.key == pygame.K_s:
+                self.piece.pos_y += self.piece.dropdown(self.grid)
+                self.data_gen.write_grid(self.gGrid, 2)
 
-                elif event.key == pygame.K_a:
-                    if self.piece.can_place(
-                            piece=self.piece.shape,
-                            grid=self.grid,
-                            dx=-1,
-                        ) == PieceState.CAN_PLACE:
-                        self.piece.pos_x += -1
-                        self.data_gen.write_grid(self.gGrid, 4)
-                # else:
-                #     d = int(event.key == pygame.K_d) - int(event.key == pygame.K_a)
-                #     if self.piece.can_place(
-                #             #piece=self.piece,
-                #             piece=self.piece.shape,
-                #             grid=self.grid,
-                #             dx=d,
-                #         ) == PieceState.CAN_PLACE:
-                #         self.piece.pos_x += d
+            # Sideways movement
+            elif event.key == pygame.K_d:
+                if self.piece.can_place(
+                        piece=self.piece.shape,
+                        grid=self.grid,
+                        dx=1,
+                    ) == PieceState.CAN_PLACE:
+                    self.piece.pos_x += 1
+                    self.data_gen.write_grid(self.gGrid, 3)
+
+            elif event.key == pygame.K_a:
+                if self.piece.can_place(
+                        piece=self.piece.shape,
+                        grid=self.grid,
+                        dx=-1,
+                    ) == PieceState.CAN_PLACE:
+                    self.piece.pos_x += -1
+                    self.data_gen.write_grid(self.gGrid, 4)
 
     def update(self):
         '''Update part from the loop. All logic should be managed from here.'''
@@ -113,6 +123,8 @@ class GameManager:
     def loop(self):
         '''Game loop'''
         clock = pygame.time.Clock()
+
+        self.setup()
 
         while True:
             clock.tick(30)
