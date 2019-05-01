@@ -1,18 +1,27 @@
+'''Module for CSV data file creation'''
+
 import csv
 
 class DataGenerator:
-    def __init__(self, file_name='Data.csv'):
-        self.csv_file = open(file_name, 'w')
+    '''CSV class interface to keep continues growing data on a CSV file'''
+
+    def __init__(self, create_new=False, file_name='Data.csv'):
+        self.csv_file = open(
+            file_name,
+            'w' if create_new else 'a',
+            )
         self.writer = csv.writer(self.csv_file)
-        header = [i for i in range(22 * 10)]
-        header.append('Output')
-        self.writer.writerow(header)
+
+        if create_new:
+            header = [i for i in range(22 * 10)]
+            header.append('Output')
+            self.writer.writerow(header)
 
     def __del__(self):
-        self.close_file()
+        self.csv_file.close()
 
     def write_grid(self, grid, move):
-        ''''''
+        '''Writes instance of grid in a given frame'''
         row = []
         for i in range(grid.height):
             for j in range(grid.width):
@@ -20,7 +29,3 @@ class DataGenerator:
 
         row.append(move)
         self.writer.writerow(row)
-
-    def close_file(self):
-        '''Close file after usage'''
-        self.csv_file.close()

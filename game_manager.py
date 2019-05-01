@@ -34,13 +34,20 @@ class GameManager:
 
         # Arg flags
         self.is_human = True
+        self.debug_mode = False
 
-    def setup(self):
+    def flag_setup(self):
         '''Setup function for whatever is needed'''
         arguments = sys.argv[1:]
 
         if '-ai' in arguments:
             self.is_human = False
+
+        if '-debug' in arguments:
+            self.debug_mode = True
+
+        if '-o' in arguments:
+            pass
 
     def handle_events(self):
         '''Handle all events in the event queue'''
@@ -124,7 +131,7 @@ class GameManager:
         '''Game loop'''
         clock = pygame.time.Clock()
 
-        self.setup()
+        # self.setup()
 
         while True:
             clock.tick(30)
@@ -134,4 +141,6 @@ class GameManager:
 
             self.update()
             self.render()
-            #self.print()
+
+            if self.debug_mode:
+                self.print()
