@@ -5,6 +5,7 @@ import csv
 class DataGenerator:
     '''CSV class interface to keep continues growing data on a CSV file'''
 
+    # def __init__(self, create_new=True, file_name='Data.csv'):
     def __init__(self, create_new=False, file_name='Data.csv'):
         self.csv_file = open(
             file_name,

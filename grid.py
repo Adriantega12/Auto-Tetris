@@ -63,7 +63,7 @@ class Grid:
                             self.cell_size,
                             self.cell_size,
                             ),
-                        2
+                        # 2
                         )
 
     def print(self):
