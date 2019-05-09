@@ -4,8 +4,14 @@ From here the game loop will run. All the other elements of the game will be mad
 '''
 
 from os import system
+import sys
 from copy import deepcopy
 from random import randint
+from joblib import load
+import numpy as np
+import pandas as pd
+from sklearn.neural_network import MLPClassifier
+from sklearn.svm import SVC
 import pygame
 from grid import Grid
 from piece import Piece, PieceState
@@ -19,14 +25,39 @@ class GameManager:
 
         self.display = pygame.display.set_mode((600, 660), pygame.SRCALPHA, 32)
 
+        # Game level (Probably should modify this)
         self.frames = 0
         self.speed = 15
 
+        # Game essentials
         self.grid = Grid()
         self.gGrid = Grid()
         self.piece = Piece.generate_piece(randint(1, 7))
 
+        # Data generation for the neural network
         self.data_gen = DataGenerator()
+
+        # Arg flags
+        self.is_human = True
+        self.debug_mode = False
+        self.model = None
+        self.flag_setup()
+
+    def flag_setup(self):
+        '''Setup function for whatever is needed'''
+        arguments = sys.argv[1:]
+
+        if '-ai' in arguments:
+            print('AI is working')
+            self.is_human = False
+            ai_file = arguments[arguments.index('-ai') + 1]
+            self.model = load(ai_file)
+
+        if '-debug' in arguments:
+            self.debug_mode = True
+
+        if '-o' in arguments:
+            pass
 
     def handle_events(self):
         '''Handle all events in the event queue'''
@@ -35,44 +66,70 @@ class GameManager:
                 print('Bye bye')
                 exit()
 
-            if event.type == pygame.KEYDOWN:
-                # Rotation
-                if event.key == pygame.K_r:
-                    self.piece.rotate(self.grid)
-                    self.data_gen.write_grid(self.gGrid, 1)
+            if self.is_human:
+                self.handle_human_input(event)
 
-                # Drop down
-                elif event.key == pygame.K_s:
-                    self.piece.pos_y += self.piece.dropdown(self.grid)
-                    self.data_gen.write_grid(self.gGrid, 2)
+        if not self.is_human:
+            row = []
+            for i in range(self.gGrid.height):
+                for j in range(self.gGrid.width):
+                    row.append(int(self.gGrid[i][j] > 0))
+            reshaped_row = np.asarray(row).reshape(1, -1)
+            move = self.model.predict(reshaped_row)[0]
+            # print(move)
 
-                # Sideways movement
-                elif event.key == pygame.K_d:
-                    if self.piece.can_place(
-                            piece=self.piece.shape,
-                            grid=self.grid,
-                            dx=1,
-                        ) == PieceState.CAN_PLACE:
-                        self.piece.pos_x += 1
-                        self.data_gen.write_grid(self.gGrid, 3)
+            if move == 1:
+                self.rotate()
+            elif move == 2:
+                self.dropdown()
+            elif move == 3:
+                self.move_right()
+            elif move == 4:
+                self.move_left()
 
-                elif event.key == pygame.K_a:
-                    if self.piece.can_place(
-                            piece=self.piece.shape,
-                            grid=self.grid,
-                            dx=-1,
-                        ) == PieceState.CAN_PLACE:
-                        self.piece.pos_x += -1
-                        self.data_gen.write_grid(self.gGrid, 4)
-                # else:
-                #     d = int(event.key == pygame.K_d) - int(event.key == pygame.K_a)
-                #     if self.piece.can_place(
-                #             #piece=self.piece,
-                #             piece=self.piece.shape,
-                #             grid=self.grid,
-                #             dx=d,
-                #         ) == PieceState.CAN_PLACE:
-                #         self.piece.pos_x += d
+
+    def handle_human_input(self, event):
+        '''Handle human input if control is given'''
+        if event.type == pygame.KEYDOWN:
+            # Rotation
+            if event.key == pygame.K_r:
+                self.rotate()
+                self.data_gen.write_grid(self.gGrid, 1)
+
+            # Drop down
+            elif event.key == pygame.K_s:
+                self.dropdown()
+                self.data_gen.write_grid(self.gGrid, 2)
+
+            elif event.key == pygame.K_d:
+                self.move_right()
+                self.data_gen.write_grid(self.gGrid, 3)
+
+            elif event.key == pygame.K_a:
+                self.move_left()
+                self.data_gen.write_grid(self.gGrid, 4)
+
+    def rotate(self):
+        self.piece.rotate(self.grid)
+
+    def dropdown(self):
+        self.piece.pos_y += self.piece.dropdown(self.grid)
+
+    def move_right(self):
+        if self.piece.can_place(
+                piece=self.piece.shape,
+                grid=self.grid,
+                dx=1,
+            ) == PieceState.CAN_PLACE:
+            self.piece.pos_x += 1
+
+    def move_left(self):
+        if self.piece.can_place(
+                piece=self.piece.shape,
+                grid=self.grid,
+                dx=-1,
+            ) == PieceState.CAN_PLACE:
+            self.piece.pos_x += -1
 
     def update(self):
         '''Update part from the loop. All logic should be managed from here.'''
@@ -84,7 +141,8 @@ class GameManager:
                     dy=1,
                 ) == PieceState.CAN_PLACE:
                 self.piece.pos_y += 1
-                self.data_gen.write_grid(self.gGrid, 0)
+                if self.is_human:
+                    self.data_gen.write_grid(self.gGrid, 0)
             else:
                 # Place piece
                 self.grid.set_piece(self.piece)
@@ -114,6 +172,8 @@ class GameManager:
         '''Game loop'''
         clock = pygame.time.Clock()
 
+        # self.setup()
+
         while True:
             clock.tick(30)
             self.frames += 1
@@ -122,4 +182,6 @@ class GameManager:
 
             self.update()
             self.render()
-            #self.print()
+
+            if self.debug_mode:
+                self.print()

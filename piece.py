@@ -81,9 +81,9 @@ class Piece:
         '''Constructor method'''
         self.piece_type = piece_type
         self.shape = deepcopy(Piece.SHAPES[piece_type - 1])
-        self.pos_x = 0
-        self.pos_y = 2
         self.length = len(self.shape)
+        self.pos_x = 5 - self.length // 2
+        self.pos_y = 2
 
     def __getitem__(self, index):
         '''Returns the row in the shape of the piece'''
