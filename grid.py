@@ -1,17 +1,19 @@
 '''Grid class module. Basically the game board.'''
 
-from pygame import draw
+from pygame import draw, image
 from piece import Piece
 
 class Grid:
     '''Grid class object to represent grid.'''
 
-    def __init__(self, grid_width=10, grid_height=22, cell_size=28):
+    def __init__(self, grid_width=10, grid_height=22, cell_size=29):
         '''Init function.'''
         self.width = grid_width
         self.height = grid_height
         self.grid = [[0 for i in range(grid_width)] for j in range(grid_height)]
         self.cell_size = cell_size
+
+        self.tile = image.load('./assets/tile2.png').convert_alpha()
 
     def __getitem__(self, index):
         '''Access to grid using brackets as if it was just a matrix.'''
@@ -44,16 +46,33 @@ class Grid:
 
     def render(self, display, x=8, y=8):
         '''Render method of the grid, should render all the grid'''
+
         # Background
         draw.rect(
             display,
             (66, 134, 244),
             (x, y, self.cell_size * self.width, self.cell_size * (self.height - 2)),
             )
+        # Grid
+        for i in range(self.height - 2):
+            draw.line(
+                display,
+                (66, 134, 233),
+                (x, y + i * self.cell_size),
+                (x + self.cell_size * self.width, y + i * self.cell_size),
+                )
+        for i in range(self.width):
+            draw.line(
+                display,
+                (66, 134, 233),
+                (x + i * self.cell_size, y),
+                (x + i * self.cell_size, y + self.cell_size * (self.height - 2)),
+                )
         # Draw all cells
         for i in range(self.height):
             for j in range(self.width):
                 if self.grid[i][j] != 0:
+                    # Draw colored cell
                     draw.rect(
                         display,
                         Piece.COLORS[self.grid[i][j]],
@@ -63,11 +82,17 @@ class Grid:
                             self.cell_size,
                             self.cell_size,
                             ),
-                        # 2
+                        )
+                    # Draw shade
+                    display.blit(
+                        self.tile,
+                        (
+                            x + j * self.cell_size,
+                            y + (i - 2) * self.cell_size,
+                            ),
                         )
 
     def print(self):
         '''Print grid to console.'''
         for i in range(self.height):
             print(self.grid[i])
-            # print(i, self.grid[i])

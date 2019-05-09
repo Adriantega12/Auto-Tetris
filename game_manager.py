@@ -74,6 +74,7 @@ class GameManager:
             for i in range(self.gGrid.height):
                 for j in range(self.gGrid.width):
                     row.append(int(self.gGrid[i][j] > 0))
+            row.append(self.piece.piece_type)
             reshaped_row = np.asarray(row).reshape(1, -1)
             move = self.model.predict(reshaped_row)[0]
             # print(move)
@@ -94,20 +95,20 @@ class GameManager:
             # Rotation
             if event.key == pygame.K_r:
                 self.rotate()
-                self.data_gen.write_grid(self.gGrid, 1)
+                self.data_gen.write_grid(self.gGrid, self.piece.piece_type, 1)
 
             # Drop down
             elif event.key == pygame.K_s:
                 self.dropdown()
-                self.data_gen.write_grid(self.gGrid, 2)
+                self.data_gen.write_grid(self.gGrid, self.piece.piece_type, 2)
 
             elif event.key == pygame.K_d:
                 self.move_right()
-                self.data_gen.write_grid(self.gGrid, 3)
+                self.data_gen.write_grid(self.gGrid, self.piece.piece_type, 3)
 
             elif event.key == pygame.K_a:
                 self.move_left()
-                self.data_gen.write_grid(self.gGrid, 4)
+                self.data_gen.write_grid(self.gGrid, self.piece.piece_type, 4)
 
     def rotate(self):
         self.piece.rotate(self.grid)
@@ -142,7 +143,7 @@ class GameManager:
                 ) == PieceState.CAN_PLACE:
                 self.piece.pos_y += 1
                 if self.is_human:
-                    self.data_gen.write_grid(self.gGrid, 0)
+                    self.data_gen.write_grid(self.gGrid, self.piece.piece_type, 0)
             else:
                 # Place piece
                 self.grid.set_piece(self.piece)
@@ -155,7 +156,7 @@ class GameManager:
     def render(self):
         '''Render method of the game loop. Here everything will be rendered.'''
         self.display.fill((100, 100, 100))
-        self.gGrid.render(self.display)
+        self.gGrid.render(self.display, x=10, y=20)
         pygame.display.update()
 
     def print(self):
