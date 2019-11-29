@@ -77,7 +77,6 @@ class GameManager:
             row.append(self.piece.piece_type)
             reshaped_row = np.asarray(row).reshape(1, -1)
             move = self.model.predict(reshaped_row)[0]
-            # print(move)
 
             if move == 1:
                 self.rotate()

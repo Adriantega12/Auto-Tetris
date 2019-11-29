@@ -54,17 +54,18 @@ class Grid:
             (x, y, self.cell_size * self.width, self.cell_size * (self.height - 2)),
             )
         # Grid
+        GRID_COLOR = (55, 123, 222)
         for i in range(self.height - 2):
             draw.line(
                 display,
-                (66, 134, 233),
+                GRID_COLOR,
                 (x, y + i * self.cell_size),
                 (x + self.cell_size * self.width, y + i * self.cell_size),
                 )
         for i in range(self.width):
             draw.line(
                 display,
-                (66, 134, 233),
+                GRID_COLOR,
                 (x + i * self.cell_size, y),
                 (x + i * self.cell_size, y + self.cell_size * (self.height - 2)),
                 )
