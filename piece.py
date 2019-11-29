@@ -24,15 +24,15 @@ class PieceType(Enum):
 
 class Piece:
     '''Base class for different pieces.'''
-    shapes = (
+    SHAPES = (
         [
             [1, 1],
             [1, 1],
         ],
         [
             [0, 0, 0, 0],
-            [0, 0, 0, 0],
             [1, 1, 1, 1],
+            [0, 0, 0, 0],
             [0, 0, 0, 0],
         ],
         [
@@ -62,6 +62,17 @@ class Piece:
         ],
     )
 
+    COLORS = [
+        (0, 0, 0),
+        (255, 255, 0),
+        (0, 255, 255),
+        (220, 0, 220),
+        (255, 128, 0),
+        (0, 0, 255),
+        (0, 255, 0),
+        (255, 0, 0),
+    ]
+
     def generate_piece(piece_index=1):
         '''Class method. Generates a piece from a given index.'''
         return Piece(piece_index)
@@ -69,10 +80,10 @@ class Piece:
     def __init__(self, piece_type=PieceType.O.value):
         '''Constructor method'''
         self.piece_type = piece_type
-        self.shape = deepcopy(Piece.shapes[piece_type - 1])
-        self.pos_x = 0
-        self.pos_y = 2
+        self.shape = deepcopy(Piece.SHAPES[piece_type - 1])
         self.length = len(self.shape)
+        self.pos_x = 5 - self.length // 2
+        self.pos_y = 2
 
     def __getitem__(self, index):
         '''Returns the row in the shape of the piece'''
@@ -113,3 +124,13 @@ class Piece:
             else:
                 self.pos_x = grid.width - self.length
             self.shape = deepcopy(rotated_piece)
+
+    def dropdown(self, grid):
+        '''Dropdown a piece'''
+
+        for i in range(1, grid.height - self.pos_y):
+            if not self.can_place(grid, self.shape, dy=i) == PieceState.CAN_PLACE:
+                return i - 1
+
+        return 0
+
